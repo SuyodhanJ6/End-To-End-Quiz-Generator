@@ -5,9 +5,9 @@ with open("README.md", "r", encoding="utf-8") as f:
 
 __version__ = "0.0.0"
 
-REPO_NAME = "DeepClassify"
+REPO_NAME = "MCQGenerator"
 AUTHOR_USER_NAME = "SuyodhanJ6"
-SRC_REPO = "DeepClassify"
+SRC_REPO = "MCQGenerator"
 AUTHOR_EMAIL = "prashantmalge181@gmail.com"
 
 setuptools.setup(

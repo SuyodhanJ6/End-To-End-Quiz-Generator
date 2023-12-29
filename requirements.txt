@@ -1,16 +1,16 @@
-tensorflow
-dvc
 pandas
 notebook
 numpy
 matplotlib
 seaborn
-python-box==6.0.2
 pyYAML
 tqdm
-ensure==1.0.2
-joblib
+path
 types-PyYAML
-scipy
-mlflow==1.26.1
+openai
+langchain
+streamlit
+python-dotenv
+PyPDF2
+
 -e .
