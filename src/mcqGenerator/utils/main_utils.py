@@ -1,161 +1,96 @@
+import os, sys
+import pandas as pd
 import yaml
-from src.exception import MoneyLaunderingException
-from src.deepClassifier.logger import logging
-from src.logger import logging
-import os,sys
-import numpy as np
-import dill
 
-def read_yaml_file(file_path: str) -> dict:
+from mcqGenerator.logger import logging
+from mcqGenerator.exception import McqGeneratorException
+
+def generate_quiz_table_data(quiz) -> list:
     """
-    Method Name: read_yaml_file
-    Description: Reads a YAML file and returns its content as a dictionary.
+    Method Name: generate_quiz_table_data
+    Description: Generate a table of quiz data for display.
+
+    Input:
+    - quiz (dict): A dictionary containing quiz data.(json)
+
+    Output:
+    - quiz_table_data (list): A list of dictionaries representing quiz data in tabular format.
+
+    On Failure: Raises an exception if the input is not in the expected format.
+
+    Version: 1.0
+    """
+    try:
+        quiz_table_data = []
+        for key, value in quiz.items():
+            mcq = value["mcq"]
+            options = " | ".join(
+                [
+                    f"{option}: {option_value}"
+                    for option, option_value in value["options"].items()
+                ]
+            )
+            correct = value["correct"]
+            quiz_table_data.append({"MCQ": mcq, "Choices": options, "Correct": correct})
+        return quiz_table_data
+
+    except Exception as e:
+        raise McqGeneratorException(e, sys)
+    
+
+def read_text_from_file(file_path):
+    """
+    Method Name: read_text_from_file
+    Description: Read the contents of a file and return the text.
     
     Input:
-    - file_path (str): Path to the YAML file.
-    
-    Output: Dictionary containing the content of the YAML file.
-    
-    On Failure: Raises an exception with error details.
+    - file_path (str): The path to the file to be read.
+
+    Output:
+    - text (str): The contents of the file as a string.
+
+    On Failure: Raises an exception if the file cannot be read or does not exist.
     
     Version: 1.0
     """
     try:
-        with open(file_path, "rb") as yaml_file:
-            return yaml.safe_load(yaml_file)
+        with open(file_path, 'r') as file:
+            text = file.read()
+        return text
+    except FileNotFoundError:
+        raise FileNotFoundError(f"The file '{file_path}' does not exist.")
     except Exception as e:
-        # If an exception occurs, raise it with error details
-        raise MoneyLaunderingException(e, sys) from e
+        raise McqGeneratorException(e, sys)
+    
 
-
-
-def write_yaml_file(file_path: str, content: object, replace: bool = False) -> None:
+def write_quiz_data_to_csv(quiz_table_data, csv_filename):
     """
-    Method Name: write_yaml_file
-    Description: Writes content to a YAML file.
-    
+    Method Name: write_quiz_data_to_csv
+    Description: Write quiz data to a CSV file.
+
     Input:
-    - file_path (str): Path to the YAML file.
-    - content (object): Content to be written to the YAML file.
-    - replace (bool): If True, replace the existing file; if False, append to it. Default is False.
-    
+    - quiz_table_data (list): A list of dictionaries containing quiz data.
+    - csv_filename (str): The desired filename for the CSV file.
+
     Output: None
-    
-    On Failure: Raises an exception with error details.
-    
+
+    On Failure: Raises an exception if there are issues during the CSV writing process.
+
     Version: 1.0
     """
     try:
-        if replace:
-            if os.path.exists(file_path):
-                os.remove(file_path)
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        with open(file_path, "w") as file:
-            yaml.dump(content, file)
+        # Convert the list of dictionaries to a DataFrame
+        quiz_df = pd.DataFrame(quiz_table_data)
+
+        # Write the DataFrame to a CSV file
+        quiz_df.to_csv(csv_filename, index=False)
+
+        logging.info(f"Quiz data has been successfully written to {csv_filename}")
     except Exception as e:
-        # If an exception occurs, raise it with error details
-        raise MoneyLaunderingException(e, sys)
+        raise McqGeneratorException(e, sys)
 
 
-
-
-def save_numpy_array_data(file_path: str, array: np.array):
-    """
-    Method Name: save_numpy_array_data
-    Description: Save numpy array data to a binary file.
-    
-    Input:
-    - file_path (str): Location of the file to save.
-    - array (np.array): Numpy array data to save.
-    
-    Output: None
-    
-    On Failure: Raises an exception with error details.
-    
-    Version: 1.0
-    """
-    try:
-        dir_path = os.path.dirname(file_path)
-        os.makedirs(dir_path, exist_ok=True)
-        with open(file_path, "wb") as file_obj:
-            np.save(file_obj, array)
-    except Exception as e:
-        # If an exception occurs, raise it with error details
-        raise MoneyLaunderingException(e, sys) from e
-
-
-
-def load_numpy_array_data(file_path: str) -> np.array:
-    """
-    Method Name: load_numpy_array_data
-    Description: Load numpy array data from a binary file.
-    
-    Input:
-    - file_path (str): Location of the file to load.
-    
-    Output: np.array data loaded from the file.
-    
-    On Failure: Raises an exception with error details.
-    
-    Version: 1.0
-    """
-    try:
-        with open(file_path, "rb") as file_obj:
-            return np.load(file_obj)
-    except Exception as e:
-        # If an exception occurs, raise it with error details
-        raise MoneyLaunderingException(e, sys) from e
-
-
-
-def save_object(file_path: str, obj: object) -> None:
-    """
-    Method Name: save_object
-    Description: Save an object to a binary file using dill library.
-    
-    Input:
-    - file_path (str): Location of the file to save.
-    - obj (object): Object to be saved.
-    
-    Output: None
-    
-    On Failure: Raises an exception with error details.
-    
-    Version: 1.0
-    """
-    try:
-        logging.info("Entered the save_object method of MainUtils class")
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        with open(file_path, "wb") as file_obj:
-            dill.dump(obj, file_obj)
-        logging.info("Exited the save_object method of MainUtils class")
-    except Exception as e:
-        # If an exception occurs, raise it with error details
-        raise MoneyLaunderingException(e, sys) from e
-
-
-
-def load_object(file_path: str) -> object:
-    """
-    Method Name: load_object
-    Description: Load an object from a binary file using dill library.
-    
-    Input:
-    - file_path (str): Location of the file to load.
-    
-    Output: The loaded object.
-    
-    On Failure: Raises an exception if the file doesn't exist or if there's an error during loading.
-    
-    Version: 1.0
-    """
-    try:
-        if not os.path.exists(file_path):
-            raise Exception(f"The file: {file_path} does not exist")
-        with open(file_path, "rb") as file_obj:
-            return dill.load(file_obj)
-    except Exception as e:
-        # If an exception occurs, raise it with error details
-        raise MoneyLaunderingException(e, sys) from e
-
-
+def load_llm_config(file_path):
+    with open(file_path, "r") as file:
+        config = yaml.safe_load(file)
+    return config.get("llm_config", {})

@@ -1,10 +1,11 @@
 # Building End-To-End MCQ Generator Application
 
+[![Suyodhan](https://img.shields.io/badge/Suyodhan-Awesome-brightgreen.svg)](https://github.com/SuyodhanJ6)
 [![GitHub License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.8-blue.svg)](https://www.python.org/downloads/release/python-380/)
 [![Conda](https://img.shields.io/badge/Conda-4.9.0-green.svg)](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html)
 [![Visual Studio Code](https://img.shields.io/badge/VS_Code-Latest-blue.svg)](https://code.visualstudio.com/download)
-[![Langchain](https://img.shields.io/badge/Langchain-Your_Link-red.svg)](your-langchain-link)
+[![Langchain](https://img.shields.io/badge/Langchain-Your_Link-red.svg)]
 [![OpenAI](https://img.shields.io/badge/OpenAI-Latest-orange.svg)](https://beta.openai.com/signup/)
 
 
@@ -105,4 +106,4 @@ Follow the steps outlined in the [Installation](#installation) section to set up
 ## Contact
 - For questions or feedback, feel free to reach out to the project maintainers at prashantmalge181@gmail.com or create an issue on GitHub.
 
-Enjoy streamlining your project setup process with the Project Template Generator Script!
+## Thank You! 🚀
